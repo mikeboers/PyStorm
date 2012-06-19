@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+import storm
+
+
+if len(sys.argv) < 3:
+    print 'usage: %s archive.mpq files ...' % sys.argv[0]
+
+archive = storm.Archive(sys.argv[1], 'w')
+
+for path in sys.argv[2:]:
+    if os.path.isdir(path):
+        for dirname, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                filepath = os.path.join(dirname, filename)
+                if filepath.startswith('./'):
+                    filepath = filepath[2:]
+                archive.add_file(filepath)
+    else:
+        archive.add_file(path)
+
+archive.close()
+
+
